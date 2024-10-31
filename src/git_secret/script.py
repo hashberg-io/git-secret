@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import argparse
 
-from git_secret.keystore import KeyStore
 from .filestore import FileStore
 
 

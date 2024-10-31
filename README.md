@@ -1,7 +1,20 @@
-# Git-Secret
+# Git Secret Store
 
-Git-Secret is a simple commandline utility to manage repositories of encrypted files.
-It uses `.gitignore` to ensure that files and folders not explicitly added to the **secret store** are ignored by default, reducing the likelyhood of unintended commit of confidential data.
+This is a simple commandline utility to manage repositories of encrypted files.
+You can install it from PyPI as:
+
+```
+pip install git-secret-store
+```
+
+This makes the `git-secret` command available on the system, which can be invoked inside individual Git repositories to manage secret stores.
+Run `git-secret -h` or read the documentation below for help on available sub-commands.
+
+Note: the project is not related to the [`gitsecret`](https://pypi.org/project/gitsecret/) package or the (now defunct) [git-secret.io](https://web.archive.org/web/20200601000000*/git-secret.io) commandline utility, although the basic goals are similar.
+
+## Basic Principles
+
+The `git-secret` command uses `.gitignore` to ensure that files and folders not explicitly added to the **secret store** are ignored by default, reducing the likelyhood of unintended commit of confidential data.
 
 Files can be added to the secret store in two ways:
 

@@ -1,5 +1,5 @@
 [project]
-name = "git-secret"
+name = "git-secret-store"
 version = "0.1.0"
 authors = [{ name = "Hashberg" }]
 description = "A simple tool to store encrypted data into a git repository."
@@ -20,8 +20,8 @@ dependencies = ["pycryptodomex>=3.19"]
 
 
 [project.urls]
-Repository = "https://github.com/hashberg-io/git-secret"
-Issues = "https://github.com/hashberg-io/git-secret/issues"
+Repository = "https://github.com/hashberg-io/git-secret-store"
+Issues = "https://github.com/hashberg-io/git-secret-store/issues"
 
 [build-system] # see https://pypi.org/classifiers/
 requires = [
