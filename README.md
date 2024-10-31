@@ -1,5 +1,10 @@
 # Git Secret Store
 
+[![Python versions](https://img.shields.io/badge/python-3.10+-green.svg)](https://docs.python.org/3.10/)
+[![PyPI version](https://img.shields.io/pypi/v/git-secret-store.svg)](https://pypi.python.org/pypi/git-secret-store/)
+[![PyPI status](https://img.shields.io/pypi/status/git-secret-store.svg)](https://pypi.python.org/pypi/git-secret-store/)
+[![Checked with Mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](https://github.com/python/mypy)
+
 This is a simple commandline utility to manage repositories of encrypted files.
 You can install it from PyPI as:
 
