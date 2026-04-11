@@ -218,7 +218,7 @@ def _add_init_subparser(
 def parse_args() -> argparse.Namespace:
     """Parses command-line arguments."""
     parser = argparse.ArgumentParser(
-        prog="secret-store",
+        prog="git-secret",
         description="Manages a store of secrets based on a Git repository.",
     )
     subparsers = parser.add_subparsers(
