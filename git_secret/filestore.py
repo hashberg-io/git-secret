@@ -548,6 +548,9 @@ class FileStore:
         except FileStoreError as e:
             print(f"❌ {e}")
             return False
+        except KeyStoreError as e:
+            print(f"❌ {e}")
+            return False
         # 2. Filter files by filenames, if provided:
         if filenames is not None:
             # 2.1 Fail if any unknown filenames are provided:
