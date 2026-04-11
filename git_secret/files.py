@@ -1,13 +1,13 @@
-"""
-Implementation of encrypted file logic.
-"""
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 Hashberg Ltd
+
+"""Implementation of encrypted file logic."""
 
 from __future__ import annotations
 from functools import cached_property
 import os
 from typing import ClassVar, Final, Literal, Self, cast, final
 from weakref import WeakValueDictionary
-
 from .utils import aes256_decrypt, aes256_encrypt, sha256_hash
 
 RESERVED_EXTENSIONS: Final[tuple[str, ...]] = (
@@ -22,7 +22,7 @@ RESERVED_FILENAMES: Final[tuple[str, ...]] = (
     ".gitignore",
     ".git",
     ".mnemonic",
-    ".keyhash"
+    ".keyhash",
 )
 """List of reserved filenames for working files."""
 
@@ -99,6 +99,7 @@ FixOutcome = Literal["fixed", "failed", "skipped"]
 class FilenameError(ValueError):
     """Error in the filename for a known file."""
 
+
 @final
 class ManagedFile:
     """Class managing access to a File."""
@@ -142,9 +143,7 @@ class ManagedFile:
             with open(self.filename + ".error", "r") as f:
                 flag = f.read().strip()
             if flag not in ERROR_FLAGS:
-                raise IOError(
-                    f"Invalid error flag {flag!r} in {self.filename}.error"
-                )
+                raise IOError(f"Invalid error flag {flag!r} in {self.filename}.error")
             return cast(ErrorFlag, flag)
         except FileNotFoundError:
             return None
@@ -220,7 +219,7 @@ class ManagedFile:
         # - "remote-only"
         # - "updated-remote"
         ciphertext = self.__read_file(".secret")
-        assert ciphertext is not None # already handled by status='missing'
+        assert ciphertext is not None  # already handled by status='missing'
         # 3.1. check consistency with remote hash:
         remote_plaintext = aes256_decrypt(ciphertext, self.__key)
         if remote_plaintext is None:
@@ -263,7 +262,7 @@ class ManagedFile:
         # - "local-only"
         # - "updated-local"
         plaintext = self.__read_file()
-        assert plaintext is not None # already handled by status='missing'
+        assert plaintext is not None  # already handled by status='missing'
         # 3.1. Update ciphertext, local hash and remote hash:
         ciphertext = aes256_encrypt(plaintext, self.__key)
         self.__write_file(sha256_hash(plaintext), ".local-hash")
@@ -295,7 +294,7 @@ class ManagedFile:
         """Sets the error flag for this file."""
         if self.error:
             return
-        self.__status = "error" # sets cached status to 'error'
+        self.__status = "error"  # sets cached status to 'error'
         with open(self.filename + ".error", "w") as f:
             f.write(flag)
         self.error = flag
@@ -305,12 +304,11 @@ class ManagedFile:
         if not self.error:
             return
         try:
-            del self.__status # clears cached status
+            del self.__status  # clears cached status
         except AttributeError:
             pass
         os.remove(self.filename + ".error")
         self.error = None
-
 
     __instances: ClassVar[WeakValueDictionary[str, ManagedFile]] = WeakValueDictionary()
     """A private static weak value dictionary of existing instances."""
@@ -324,9 +322,7 @@ class ManagedFile:
     __Kind = Literal["", ".secret", ".local-hash", ".remote-hash"]
     """The four possible kinds of file read and written."""
 
-    def __read_file(
-        self, kind: ManagedFile.__Kind = ""
-    ) -> bytes | None:
+    def __read_file(self, kind: ManagedFile.__Kind = "") -> bytes | None:
         """Reads the contents of one of the underlying files."""
         try:
             with open(self.filename + kind, "rb") as f:

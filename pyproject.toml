@@ -1,14 +1,15 @@
 [project]
 name = "git-secret-store"
-version = "0.1.0"
+dynamic = ["version"]
 authors = [{ name = "Hashberg" }]
 description = "A simple tool to store encrypted data into a git repository."
-readme = { file = "README.rst", content-type = "text/markdown" }
+readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.11",
@@ -23,26 +24,35 @@ dependencies = ["pycryptodomex>=3.19"]
 Repository = "https://github.com/hashberg-io/git-secret-store"
 Issues = "https://github.com/hashberg-io/git-secret-store/issues"
 
-[build-system] # see https://pypi.org/classifiers/
-requires = [
-    "setuptools>=63.4.3",  # see https://github.com/python/mypy/issues/13392#issuecomment-1212727421
-    "wheel",
-    "setuptools_scm>=6.2",
-]
-build-backend = "setuptools.build_meta"
-
-# see https://github.com/pypa/setuptools_scm
-[tool.setuptools_scm]
-version_scheme = "post-release"   # use post-release scheme (default is pre-release of next version)
-local_scheme = "no-local-version" # interferes with PyPI
+[build-system]
+requires = ["hatchling == 1.26.3"]
+build-backend = "hatchling.build"
 
 [tool.black]
-line-length = 80
-target-version = ["py310", "py311", "py312"]
+target-version = ["py310", "py311", "py312", "py313"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = true
+
+[tool.pyright]
+typeCheckingMode = "off"
+reportInvalidTypeForm = false
+
+[tool.hatch.version]
+path = "git_secret/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["git_secret"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+
+[tool.hatch.build.targets.sdist]
+only-include = ["git_secret", "README.md", "LICENSE"]
 
 [project.scripts]
 git-secret = "git_secret.script:main"
+
+[dependency-groups]
+dev = ["pytest >= 8.4.2", "numpy >= 2.3.4"]

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 Hashberg Ltd
+
 """
 Implementation of the file store.
 """
@@ -7,12 +10,13 @@ from collections.abc import Callable, Container, Mapping
 import os
 from types import MappingProxyType
 from typing import ClassVar, Self, final
-
 from .files import FILE_STATUSES, ManagedFile, FilenameError
 from .keystore import KeyStore, KeyStoreError
 
+
 class FileStoreError(IOError):
     """Error loading the file store."""
+
 
 @final
 class FileStore:
@@ -123,7 +127,7 @@ class FileStore:
             error_statuses={"error", "missing"},
             filenames=filenames if filenames else None,
             explain_error=lambda file, _: (
-                None if (error:=file.error) is None else error
+                None if (error := file.error) is None else error
             ),
         )
 
@@ -173,9 +177,9 @@ class FileStore:
         # 0. Make sure the user understands what it happening
         print("** THIS OPERATION MIGHT LEAK SECRETS **")
         while True:
-            response = input(
-                f"Are you sure you want to proceed? [yes/no]: "
-            ).strip().lower()
+            response = (
+                input(f"Are you sure you want to proceed? [yes/no]: ").strip().lower()
+            )
             if response == "yes":
                 break
             elif response == "no":
@@ -221,7 +225,7 @@ class FileStore:
                 if "/" in filename:
                     path = filename.split("/")[:-1]
                     for i in range(1, len(path) + 1):
-                        folder = "/".join(path[:i])+"/"
+                        folder = "/".join(path[:i]) + "/"
                         if folder not in folders:
                             f.write(f"!{folder}\n")
                             folders.add(folder)
@@ -287,7 +291,7 @@ class FileStore:
                 if "/" in filename:
                     path = filename.split("/")[:-1]
                     for i in range(1, len(path) + 1):
-                        folder = "/".join(path[:i])+"/"
+                        folder = "/".join(path[:i]) + "/"
                         if folder not in folders:
                             f.write(f"!{folder}\n")
                             folders.add(folder)
@@ -336,9 +340,7 @@ class FileStore:
                     continue
                 any_prompt = True
                 while True:
-                    response = input(
-                        f"Add {filename}? [y/n]: "
-                    ).strip().lower()
+                    response = input(f"Add {filename}? [y/n]: ").strip().lower()
                     if response == "y":
                         filenames.append(filename)
                         break
@@ -348,9 +350,9 @@ class FileStore:
             print("No files added." if any_prompt else "No files to add.")
             return True
         while True:
-            response = input(
-                f"Add {len(filenames)} new files? [yes/no]: "
-            ).strip().lower()
+            response = (
+                input(f"Add {len(filenames)} new files? [yes/no]: ").strip().lower()
+            )
             if response == "yes":
                 self.add(filenames)
                 break
@@ -370,9 +372,9 @@ class FileStore:
         """
         print("** THIS IS A DESTRUCTIVE OPERATION **")
         while True:
-            response = input(
-                f"Are you sure you want to proceed? [yes/no]: "
-            ).strip().lower()
+            response = (
+                input(f"Are you sure you want to proceed? [yes/no]: ").strip().lower()
+            )
             if response == "yes":
                 break
             elif response == "no":
@@ -381,13 +383,11 @@ class FileStore:
         if force:
             clearable_statuses = FILE_STATUSES
         else:
-            clearable_statuses = (
-                "unchanged", "local-only", "updated-local", "missing"
-            )
+            clearable_statuses = ("unchanged", "local-only", "updated-local", "missing")
         self.__apply_file_op(
             "check",
             lambda file: file.status(deep=True),
-            error_statuses={*FILE_STATUSES}-{*clearable_statuses},
+            error_statuses={*FILE_STATUSES} - {*clearable_statuses},
             filenames=filenames if filenames else None,
         )
         files_to_clear: dict[str, ManagedFile] = {
@@ -397,9 +397,11 @@ class FileStore:
             and (not filenames or filename in filenames)
         }
         while True:
-            response = input(
-                f"Are you ** REALLY SURE ** you want to proceed? [yes/no]: "
-            ).strip().lower()
+            response = (
+                input(f"Are you ** REALLY SURE ** you want to proceed? [yes/no]: ")
+                .strip()
+                .lower()
+            )
             if response == "yes":
                 break
             elif response == "no":
@@ -408,19 +410,19 @@ class FileStore:
         removed_count = 0
         for filename, file in files_to_clear.items():
             try:
-                os.remove(filename+".secret")
+                os.remove(filename + ".secret")
                 print(f"Removed {filename}.secret")
                 removed_count += 1
             except FileNotFoundError:
                 pass
             try:
-                os.remove(filename+".remote-hash")
+                os.remove(filename + ".remote-hash")
                 print(f"Removed {filename}.remote-hash")
                 removed_count += 1
             except FileNotFoundError:
                 pass
             try:
-                os.remove(filename+".local-hash")
+                os.remove(filename + ".local-hash")
                 print(f"Removed {filename}.local-hash")
                 removed_count += 1
             except FileNotFoundError:
@@ -450,8 +452,7 @@ class FileStore:
         # 2. Create a backup of the old .gitignore
         if os.path.exists(".gitignore.old"):
             print(
-                f"❌ found existing .gitignore.old file. "
-                "Use --force to overwrite."
+                f"❌ found existing .gitignore.old file. " "Use --force to overwrite."
             )
             return False
         try:
@@ -473,22 +474,24 @@ class FileStore:
         ]
         lines.append("# unmanaged files:")
         for filename in sorted(plaintext_files):
-            lines.append("!"+filename)
+            lines.append("!" + filename)
         included_folders: set[str] = set()
         lines.append("# managed files:")
+
         def sort_key(filename: str) -> tuple[str, ...]:
             return tuple(filename.split("/"))
+
         for filename in sorted(encrypted_files, key=sort_key):
             if "/" in filename:
                 path = filename.split("/")[:-1]
-                for i in range(1, len(path)+1):
-                    folder = "/".join(path[:i])+"/"
+                for i in range(1, len(path) + 1):
+                    folder = "/".join(path[:i]) + "/"
                     if folder in included_folders:
                         continue
-                    lines.append("!"+folder)
+                    lines.append("!" + folder)
                     included_folders.add(folder)
-            lines.append("!"+filename+".secret")
-            lines.append("!"+filename+".remote-hash")
+            lines.append("!" + filename + ".secret")
+            lines.append("!" + filename + ".remote-hash")
         lines.append("")
         try:
             with open(".gitignore", "w", encoding="utf-8") as f:
@@ -575,8 +578,7 @@ class FileStore:
                 if error:
                     if (
                         explain_error is not None
-                        and (explanation := explain_error(file, status))
-                        is not None
+                        and (explanation := explain_error(file, status)) is not None
                     ):
                         print(f"❌ {filename}: {status}, {explanation}")
                     else:
@@ -611,14 +613,12 @@ class FileStore:
         except FileNotFoundError:
             raise FileStoreError("File .gitignore not found.") from None
         if lines[-1] != "":
-            raise FileStoreError(
-                "Empty final line required in .gitignore file."
-            )
+            raise FileStoreError("Empty final line required in .gitignore file.")
         original_lineno: dict[int, int] = {}
         for i, line in enumerate(lines):
             if line.startswith("#"):
                 continue
-            original_lineno[len(original_lineno)+1] = i+1
+            original_lineno[len(original_lineno) + 1] = i + 1
         lines = [line for line in lines if line and not line.startswith("#")]
         # 2. Check that the wildcard ignores are presend:
         FIXED_LINES = [
@@ -629,22 +629,20 @@ class FileStore:
         ]
         for i, fixed_line in enumerate(FIXED_LINES):
             if lines[i] != fixed_line:
-                lineno = original_lineno[i+1]
+                lineno = original_lineno[i + 1]
                 raise FileStoreError(
-                    f"On line {lineno} of .gitignore: "
-                    f"expected {fixed_line}"
+                    f"On line {lineno} of .gitignore: " f"expected {fixed_line}"
                 )
         # 3. Parse known files:
         encrypted_files: dict[str, ManagedFile] = {}
         folders: set[tuple[str, ...]] = set()
         plaintext_files: set[str] = set()
-        for idx, line in enumerate(lines[len(FIXED_LINES):]):
-            lineno = original_lineno[idx + len(FIXED_LINES)+1]
+        for idx, line in enumerate(lines[len(FIXED_LINES) :]):
+            lineno = original_lineno[idx + len(FIXED_LINES) + 1]
             # 3.1. Lines must start with !:
             if not line.startswith("!"):
                 raise FileStoreError(
-                    f"On line {lineno} of .gitignore: "
-                    "expected line to start by !"
+                    f"On line {lineno} of .gitignore: " "expected line to start by !"
                 )
             # 3.2. Lines that end with / are folders:
             if line.endswith("/"):
@@ -674,9 +672,7 @@ class FileStore:
             try:
                 file = ManagedFile(filename := line[1:-7], key)
             except FilenameError as e:
-                raise FileStoreError(
-                    f"On line {lineno} of .gitignore: {e}"
-                ) from None
+                raise FileStoreError(f"On line {lineno} of .gitignore: {e}") from None
             # 3.6 Check that filename is not repeated and not plaintext:
             if filename in encrypted_files:
                 raise FileStoreError(
@@ -703,6 +699,6 @@ class FileStore:
             encrypted_files[filename] = file
         # 4. Update internal state:
         self.__managed_files = encrypted_files
-        self.__folders = {"/".join(folder)+"/" for folder in folders}
+        self.__folders = {"/".join(folder) + "/" for folder in folders}
         self.__unmanaged_files = plaintext_files
         self.__loaded = True

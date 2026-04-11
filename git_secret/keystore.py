@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 Hashberg Ltd
+
 """
 Implementation of secret key management, based on BIP 39 mnemonics.
 """
@@ -5,13 +8,13 @@ Implementation of secret key management, based on BIP 39 mnemonics.
 from __future__ import annotations
 import os
 from typing import ClassVar, Self, final
-from weakref import WeakValueDictionary
 from .mnemonic import Mnemonic
 from .utils import sha256_hash
 
 
 class KeyStoreError(IOError):
     """Error loading the key store."""
+
 
 @final
 class KeyStore:
@@ -71,9 +74,7 @@ class KeyStore:
         keyhash_filename = self.__keyhash_filename
         # 1. Fail if key hash already exists:
         if os.path.exists(keyhash_filename):
-            print(
-                f"❌🔑 Secret key hash file {keyhash_filename} already exists."
-            )
+            print(f"❌🔑 Secret key hash file {keyhash_filename} already exists.")
             return False
         # 2. Fail if the mnemonic file exists:
         if os.path.exists(mnemonic_filename):
@@ -82,9 +83,7 @@ class KeyStore:
                 key_hash = sha256_hash(self.key)
                 with open(keyhash_filename, "wb") as keyhash_file:
                     keyhash_file.write(key_hash)
-                print(
-                    f"✔️🔑 Secret key hash written to file {keyhash_filename}."
-                )
+                print(f"✔️🔑 Secret key hash written to file {keyhash_filename}.")
                 return True
             print(f"❌🔑 Secret key file {mnemonic_filename} already exists.")
             return False
@@ -130,11 +129,7 @@ class KeyStore:
             raise KeyStoreError(f"File {mnemonic_filename} not found.")
         with open(mnemonic_filename, "r", encoding="utf-8") as f:
             mnemonic_file_str = f.read()
-        words = [
-            word.strip()
-            for word in mnemonic_file_str.split("\n")
-            if word.strip()
-        ]
+        words = [word.strip() for word in mnemonic_file_str.split("\n") if word.strip()]
         try:
             mnemonic = Mnemonic(words=words)
         except ValueError as e:
@@ -143,9 +138,7 @@ class KeyStore:
             with open(keyhash_filename, "rb") as mnemonic_hashfile:
                 mnemonic_hash = mnemonic_hashfile.read()
             if sha256_hash(bytes(mnemonic)) != mnemonic_hash:
-                raise KeyStoreError(
-                    f"Key does not match {keyhash_filename} contents."
-                )
+                raise KeyStoreError(f"Key does not match {keyhash_filename} contents.")
         elif require_keyhash:
             raise KeyStoreError(f"File {keyhash_filename} not found.")
         self.__mnemonic = mnemonic

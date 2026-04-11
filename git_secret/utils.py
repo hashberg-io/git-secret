@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 Hashberg Ltd
+
 """
 Cryptographic utility functions for hashing, encryption, and decryption.
 """
@@ -7,14 +10,13 @@ import hashlib
 
 try:
     import Cryptodome
+
     if not Cryptodome.version_info >= (3, 19):
         raise ModuleNotFoundError()
     from Cryptodome.Cipher import AES
-    from Cryptodome.Hash import HMAC, SHA256
 except ModuleNotFoundError:
     raise ModuleNotFoundError(
-        "You must have PyCryptodome installed.\n"
-        "pip install -U pycryptodomex>=3.19"
+        "You must have PyCryptodome installed.\n" "pip install -U pycryptodomex>=3.19"
     ) from None
 
 

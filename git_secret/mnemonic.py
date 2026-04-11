@@ -1,9 +1,3 @@
-"""
-A modified and heavily simplified version of BIP 39 mnemonics, originally from:
-
-https://github.com/trezor/python-mnemonic
-"""
-
 # Copyright (c) 2013 Pavol Rusnak
 # Copyright (c) 2017 mruddy
 # Copyright (c) 2024 Hashberg Ltd
@@ -25,6 +19,12 @@ https://github.com/trezor/python-mnemonic
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+"""
+A modified and heavily simplified version of BIP 39 mnemonics, originally from:
+
+https://github.com/trezor/python-mnemonic
+"""
+
 from __future__ import annotations
 from collections.abc import Iterable, Iterator
 import hashlib
@@ -32,6 +32,7 @@ import itertools
 import secrets
 from typing import Any, Self, final, overload
 from ._english_words import WORD_IDX, WORD_LIST
+
 
 @final
 class Mnemonic:
@@ -134,9 +135,7 @@ class Mnemonic:
                 raise ValueError(f"Unable to find {word!r} in word list.")
             # Set the next 11 bits to the value of the index:
             for ii in range(11):
-                concatBits[(wordindex * 11) + ii] = (
-                    ndx & (1 << (10 - ii))
-                ) != 0
+                concatBits[(wordindex * 11) + ii] = (ndx & (1 << (10 - ii))) != 0
             wordindex += 1
         # Compute checksum length and entropy length, in bits:
         checksumLengthBits = concatLenBits // 33

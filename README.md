@@ -424,3 +424,7 @@ Adding the same existing file twice to the store does not result in an error, th
 ```
 
 To avoid interference with the files powering the store's logic, the filename cannot end in `.local-hash`, `.remote-hash`, `.secret`, or `.error`, and it must differ from `.mnemonic`, `.keyhash` and `.gitignore`.
+
+## License
+
+[GPLv3 © Hashberg.](LICENSE)

@@ -1,11 +1,12 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 Hashberg Ltd
+
 """
 Script for managing a secret store based on the .gitignore file.
 """
 
 from __future__ import annotations
-
 import argparse
-
 from .filestore import FileStore
 
 
@@ -13,9 +14,7 @@ def _add_encrypt_subparser(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
     """Adds subparser for the encrypt command."""
-    encrypt_subparser = subparsers.add_parser(
-        "encrypt", help="Encrypts managed files."
-    )
+    encrypt_subparser = subparsers.add_parser("encrypt", help="Encrypts managed files.")
     encrypt_subparser.add_argument(
         "-f",
         "--force",
@@ -40,9 +39,7 @@ def _add_decrypt_subparser(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
     """Adds subparser for the decrypt command."""
-    decrypt_subparser = subparsers.add_parser(
-        "decrypt", help="Decrypts managed files."
-    )
+    decrypt_subparser = subparsers.add_parser("decrypt", help="Decrypts managed files.")
     decrypt_subparser.add_argument(
         "-f",
         "--force",
@@ -128,6 +125,7 @@ def _add_list_unmanaged_subparser(
         "list-unmanaged", help="Lists unmanaged files."
     )
 
+
 def _add_fix_subparser(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
@@ -169,10 +167,7 @@ def _add_clear_subparser(
 ) -> None:
     """Adds subparser for the clear! command."""
     clear_subparser = subparsers.add_parser(
-        "clear!",
-        help=(
-            "<ADMIN> Clears ciphertext, local hash and remote hash files."
-        )
+        "clear!", help=("<ADMIN> Clears ciphertext, local hash and remote hash files.")
     )
     clear_subparser.add_argument(
         "-f",
@@ -204,13 +199,13 @@ def _add_format_gitignore_subparser(
         "format-gitignore!", help="<ADMIN> Formats the .gitignore file."
     )
 
+
 def _add_init_subparser(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
     """Adds subparser for the init! command."""
     init_subparser = subparsers.add_parser(
-        "init!",
-        help="<ADMIN> Inits the repository for secret storage."
+        "init!", help="<ADMIN> Inits the repository for secret storage."
     )
     init_subparser.add_argument(
         "-f",
@@ -218,6 +213,7 @@ def _add_init_subparser(
         help="If set, overwrites the current .gitignore file, if present.",
         action="store_true",
     )
+
 
 def parse_args() -> argparse.Namespace:
     """Parses command-line arguments."""
